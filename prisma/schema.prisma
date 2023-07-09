@@ -1,10 +1,10 @@
 // COMMANDS:
 // npx prisma generate
 
-// This rebuilds all the sql & tables
+// This rebuilds all the sql & tables:
 // npx prisma migrate dev --name init --create-only
 
-// Applies migration & deploys it
+// Applies migration & deploys it:
 // npx prisma migrate deploy
 
 generator client {
@@ -13,14 +13,32 @@ generator client {
 
 datasource db {
   provider = "mysql" // eg) postgres, sqlite....
-  url = env("DATABASE_URL")
+  url      = env("DATABASE_URL")
 }
 
 model User {
-  id Int @id @default(autoincrement()) // by default, want it to auto-increment
-  firstName String
-  lastName String
-  age Int
-  createdAt DateTime @default(now()) // by default, put in now's timestamp
-  updatedAt DateTime @updatedAt
+  id         String   @id @default(uuid()) // uuid can't 'increment'
+  firstName  String
+  lastName   String
+  age        Int
+  createdAt  DateTime @default(now()) // by default, put in now's timestamp
+  updatedAt  DateTime @updatedAt
+  // this gets auto-generated if you wrote the fields on House,
+  // and then run npx prisma format.
+  houseOwned House[]  @relation("HouseOwner")
+  houseBuilt House[]  @relation("HouseBuilder")
+}
+
+model House {
+  id           String   @id @default(uuid()) // uuid can't 'increment'
+  address      String   @unique // addresses must be unique
+  wifiPassword String? // String? === this is an optional string field.
+  // Creates the relation between user and house:
+  // the ownerId on House references the id field on User.
+  owner        User     @relation("HouseOwner", fields: [ownerId], references: [id])
+  ownerId      String
+  builtBy      User     @relation("HouseBuilder", fields: [builtById], references: [id])
+  builtById    String
+  createdAt    DateTime @default(now()) // by default, put in now's timestamp
+  updatedAt    DateTime @updatedAt
 }

@@ -17,10 +17,17 @@ app.get("/", async (req, res) => {
 app.post("/", async (req, res) => {
   const { firstName, lastName, age } = req.body;
   console.log(firstName, lastName, age);
-  const newUser = await prisma.user.create({
-    data: { firstName, lastName, age },
-  });
-  res.json(newUser);
+  try {
+    const newUser = await prisma.user.create({
+      data: { firstName, lastName, age },
+    });
+    res.json(newUser);
+  } catch (err) {
+    console.log(err);
+    res
+      .status(500)
+      .json({ error: "An error occurred while creating the user." });
+  }
 });
 
 // PUT user (only their age)
