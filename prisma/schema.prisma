@@ -1,0 +1,26 @@
+// COMMANDS:
+// npx prisma generate
+
+// This rebuilds all the sql & tables
+// npx prisma migrate dev --name init --create-only
+
+// Applies migration & deploys it
+// npx prisma migrate deploy
+
+generator client {
+  provider = "prisma-client-js" // always put this
+}
+
+datasource db {
+  provider = "mysql" // eg) postgres, sqlite....
+  url = env("DATABASE_URL")
+}
+
+model User {
+  id Int @id @default(autoincrement()) // by default, want it to auto-increment
+  firstName String
+  lastName String
+  age Int
+  createdAt DateTime @default(now()) // by default, put in now's timestamp
+  updatedAt DateTime @updatedAt
+}
