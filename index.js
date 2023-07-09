@@ -25,10 +25,8 @@ app.post("/", async (req, res) => {
 
 // PUT user (only their age)
 app.put("/:id", async (req, res) => {
-  //
   const { id } = req.params;
   const newAge = req.body.age;
-  // Update the user with the id of parseInt id, update their age.
   const user = await prisma.user.update({
     where: { id: parseInt(id) },
     data: { age: newAge },
@@ -37,9 +35,7 @@ app.put("/:id", async (req, res) => {
 });
 
 app.delete("/:id", async (req, res) => {
-  //
   const { id } = req.params;
-  // Update the user with the id of parseInt id, update their age.
   const user = await prisma.user.delete({
     where: { id: parseInt(id) },
   });
